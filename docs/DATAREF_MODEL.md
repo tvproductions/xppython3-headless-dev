@@ -80,8 +80,10 @@ This keeps plugin code clean, explicit, and production‑safe.
 
 ## Bridge Enabled DataRefs
 
+**The PI_sshd_dataref_bridge.py plugin must be installed in X-Plane**
+
 When the DataRef bridge is enabled in simless, DataRefs transition through a **non‑blocking,
-deterministic authority lifecycle**. Fake values are always permitted; authority
+deterministic authority lifecycle**. Fake values are permitted until authority (X-plane-back) 
 is established explicitly.
 
 ### Meaning of `is_dummy`
@@ -102,11 +104,8 @@ FakeXP may hold values at all times. A value existing does **not** imply authori
 
 ### Authority transition rules
 
-• `META` events provide **provisional metadata only**  
-• `META` **never** establishes authority  
-• Authority flips **exactly once per connection epoch**  
-• The first provider‑originated `UPDATE` establishes authority  
-• Bridge disconnect revokes authority and returns DataRefs to dummy state  
+• `META` establishes authority with compatible value 
+• The first provider‑originated `UPDATE` establishes authority value 
 
 ### Bridge lifecycle (per DataRef path)
 ```
@@ -131,9 +130,6 @@ Dummy (last‑known preserved)
 • **UPDATE**  
   – Apply value via `DataRefManager`  
   – If `is_dummy` is True, flip to False (authority established)  
-
-• **DISCONNECT**  
-  – All bridged DataRefs revert to `is_dummy = True`  
 
 ### Non‑blocking guarantee
 
